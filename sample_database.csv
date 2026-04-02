@@ -1,0 +1,63 @@
+Item,Supplier,Price
+large red flower,ABC,5.0
+small red flower,ABC,3.0
+large blue flower,ABC,12.0
+small blue flower,ABC,6.0
+large green bush,ABC,20.0
+small green bush,ABC,15.0
+large red flower,XYZ,6.0
+small red flower,XYZ,2.0
+large blue flower,XYZ,11.0
+small blue flower,XYZ,7.0
+large green bush,XYZ,21.0
+small green bush,XYZ,16.0
+large red flower,GreenThumb,5.5
+small red flower,GreenThumb,2.75
+large blue flower,GreenThumb,10.0
+small blue flower,GreenThumb,5.25
+large green bush,GreenThumb,18.0
+small green bush,GreenThumb,13.5
+large yellow flower,ABC,8.0
+small yellow flower,ABC,4.0
+large yellow flower,XYZ,7.5
+small yellow flower,XYZ,3.75
+large yellow flower,GreenThumb,8.5
+small yellow flower,GreenThumb,4.25
+large purple flower,ABC,9.0
+small purple flower,ABC,5.0
+large purple flower,XYZ,8.75
+small purple flower,XYZ,4.5
+large purple flower,GreenThumb,9.5
+small purple flower,GreenThumb,4.75
+tall ornamental grass,ABC,14.0
+short ornamental grass,ABC,9.0
+tall ornamental grass,XYZ,13.0
+short ornamental grass,XYZ,8.5
+tall ornamental grass,GreenThumb,15.0
+short ornamental grass,GreenThumb,10.0
+large white flower,ABC,7.0
+small white flower,ABC,3.5
+large white flower,XYZ,6.5
+small white flower,XYZ,3.25
+large white flower,GreenThumb,7.25
+small white flower,GreenThumb,3.75
+climbing vine,ABC,11.0
+climbing vine,XYZ,10.5
+climbing vine,GreenThumb,12.0
+dwarf shrub,ABC,16.0
+dwarf shrub,XYZ,15.5
+dwarf shrub,GreenThumb,17.0
+large red bush,ABC,22.0
+large red bush,XYZ,21.0
+large red bush,GreenThumb,23.0
+small red bush,ABC,12.0
+small red bush,XYZ,11.5
+small red bush,GreenThumb,13.0
+fern,ABC,6.0
+fern,XYZ,5.5
+fern,GreenThumb,6.5
+large orange flower,ABC,8.0
+large orange flower,XYZ,7.75
+large orange flower,GreenThumb,8.25
+small orange flower,ABC,4.0
+small orange flower,XYZ,3.75

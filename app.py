@@ -5,7 +5,7 @@ st.set_page_config(page_title="Bid Helper", layout="centered")
 
 @st.cache_data
 def load_data():
-    df = pd.read_excel("sample_database2.xlsx")
+    df = pd.read_csv("sample_database.csv")
     df.columns = df.columns.str.strip()
     df["Item"] = df["Item"].astype(str).str.strip()
     df["Supplier"] = df["Supplier"].astype(str).str.strip()

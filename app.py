@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from streamlit_searchbox import st_searchbox
 
 st.set_page_config(page_title="SG Supplier Database", layout="wide")
 
@@ -13,31 +14,35 @@ def load_data():
     return df
 
 df = load_data()
+all_items = sorted(df["Item"].unique().tolist())
+
+def search_items(searchterm: str) -> list:
+    if not searchterm:
+        return []
+    matches = [item for item in all_items if searchterm.lower() in item.lower()]
+    if not matches:
+        return []
+    return [f'Show all results for: "{searchterm}"'] + matches
 
 st.title("SG Supplier Database")
 st.markdown("Search for an item to see all suppliers and their prices.")
 
-query = st.text_input("Search", placeholder="Type to search...")
+selected_item = st_searchbox(
+    search_items,
+    placeholder="Start typing to search...",
+    key="plant_search",
+)
 
-if query:
-    matching_items = sorted(df[df["Item"].str.contains(query, case=False, na=False)]["Item"].unique().tolist())
+if selected_item:
+    if isinstance(selected_item, str) and selected_item.startswith("Show all results for:"):
+        query = selected_item.split('"')[1]
+        results = df[df["Item"].str.contains(query, case=False, na=False)][["Item", "Supplier", "Size", "Price"]].sort_values(["Item", "Price"]).reset_index(drop=True)
+    else:
+        results = df[df["Item"] == selected_item][["Item", "Supplier", "Size", "Price"]].sort_values("Price").reset_index(drop=True)
 
-    if not matching_items:
+    if results.empty:
         st.info("No results found.")
     else:
-        refinement = st.selectbox(
-            "Suggestions — pick one to narrow results, or leave as 'All'",
-            options=["All"] + matching_items,
-            index=0,
-        )
-
-        if refinement == "All":
-            results = df[df["Item"].str.contains(query, case=False, na=False)]
-        else:
-            results = df[df["Item"] == refinement]
-
-        results = results[["Item", "Supplier", "Size", "Price"]].sort_values(["Item", "Price"]).reset_index(drop=True)
-
         best_idx = results["Price"].idxmin()
         best_item = results.loc[best_idx, "Item"]
         best_supplier = results.loc[best_idx, "Supplier"]

@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="SG Supplier Database", layout="centered")
+st.set_page_config(page_title="SG Supplier Database", layout="wide")
 
 @st.cache_data
 def load_data():
@@ -13,29 +13,36 @@ def load_data():
     return df
 
 df = load_data()
-all_items = sorted(df["Item"].unique().tolist())
 
 st.title("SG Supplier Database")
 st.markdown("Search for an item to see all suppliers and their prices.")
 
-selected_item = st.selectbox(
-    "Search item",
-    options=all_items,
-    index=None,
-    placeholder="Start typing to search...",
-)
+query = st.text_input("Search", placeholder="Type to search...")
 
-if selected_item:
-    results = df[df["Item"] == selected_item][["Supplier", "Size", "Price"]].sort_values("Price").reset_index(drop=True)
+if query:
+    matching_items = sorted(df[df["Item"].str.contains(query, case=False, na=False)]["Item"].unique().tolist())
 
-    if results.empty:
-        st.info("No suppliers found for this item.")
+    if not matching_items:
+        st.info("No results found.")
     else:
-        best = df[df["Item"] == selected_item].copy()
-        best_idx = best["Price"].idxmin()
-        best_supplier = best.loc[best_idx, "Supplier"]
-        best_price = best.loc[best_idx, "Price"]
-        st.success(f"Best price: **{best_supplier}** at **${best_price:,.2f}**")
+        refinement = st.selectbox(
+            "Suggestions — pick one to narrow results, or leave as 'All'",
+            options=["All"] + matching_items,
+            index=0,
+        )
+
+        if refinement == "All":
+            results = df[df["Item"].str.contains(query, case=False, na=False)]
+        else:
+            results = df[df["Item"] == refinement]
+
+        results = results[["Item", "Supplier", "Size", "Price"]].sort_values(["Item", "Price"]).reset_index(drop=True)
+
+        best_idx = results["Price"].idxmin()
+        best_item = results.loc[best_idx, "Item"]
+        best_supplier = results.loc[best_idx, "Supplier"]
+        best_price = results.loc[best_idx, "Price"]
+        st.success(f"Best price: **{best_item}** from **{best_supplier}** at **${best_price:,.2f}**")
 
         results["Price"] = results["Price"].apply(
             lambda p: f"${p:,.2f}" if pd.notna(p) else "N/A"
@@ -55,4 +62,4 @@ if selected_item:
         if not selected_rows.empty:
             st.markdown("#### Copy selection:")
             for _, row in selected_rows.iterrows():
-                st.code(f"{row['Supplier']}\t1\t{selected_item}\t{row['Size']}\t{row['Price']}", language=None)
+                st.code(f"{row['Supplier']}\t1\t{row['Item']}\t{row['Size']}\t{row['Price']}", language=None)

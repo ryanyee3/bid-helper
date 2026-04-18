@@ -5,7 +5,7 @@ st.set_page_config(page_title="SG Supplier Database", layout="centered")
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("sample_database.csv")
+    df = pd.read_csv("master_plant_list_2026.csv")
     df.columns = df.columns.str.strip()
     df["Item"] = df["Item"].astype(str).str.strip()
     df["Size"] = df["Size"].astype(str).str.strip().replace("nan", "")

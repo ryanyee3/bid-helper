@@ -11,10 +11,12 @@ def load_data():
     df["Item"] = df["Item"].astype(str).str.strip()
     df["Size"] = df["Size"].astype(str).str.strip().replace("nan", "")
     df["Supplier"] = df["Supplier"].astype(str).str.strip()
-    return df
+    df["Label"] = df.astype(str).agg(", ".join, axis=1)
+    return df.sort_values("Item")
 
 df = load_data()
 all_items = sorted(df["Item"].unique().tolist())
+all_labels = df["Label"].tolist()
 
 def search_items(searchterm: str) -> list:
     if not searchterm:
@@ -22,22 +24,32 @@ def search_items(searchterm: str) -> list:
     matches = [item for item in all_items if searchterm.lower() in item.lower()]
     if not matches:
         return []
-    return [f'Show all results for: "{searchterm}"'] + matches
+    return [f'Keyword search "{searchterm}"'] + matches
+
+def search_labels(searchterm: str) -> list:
+    if not searchterm:
+        return []
+    matches = [label for label in all_labels if searchterm.lower() in label.lower()]
+    if not matches:
+        return []
+    return [f'Keyword search "{searchterm}"'] + matches
 
 st.title("SG Supplier Database")
 st.markdown("Search for an item to see all suppliers and their prices.")
 
-selected_item = st_searchbox(
-    search_items,
+selected = st_searchbox(
+    search_labels,
     placeholder="Start typing to search...",
     key="plant_search",
 )
 
-if selected_item:
-    if isinstance(selected_item, str) and selected_item.startswith("Show all results for:"):
-        query = selected_item.split('"')[1]
+if selected:
+    if isinstance(selected, str) and selected.startswith("Keyword search "):
+        query = selected.split('"')[1]
         results = df[df["Item"].str.contains(query, case=False, na=False)][["Item", "Supplier", "Size", "Price"]].sort_values(["Item", "Price"]).reset_index(drop=True)
     else:
+        row_id = all_labels.index(selected)
+        selected_item = df["Item"].iloc[row_id]
         results = df[df["Item"] == selected_item][["Item", "Supplier", "Size", "Price"]].sort_values("Price").reset_index(drop=True)
 
     if results.empty:

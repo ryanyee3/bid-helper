@@ -11,7 +11,10 @@ def load_data():
     df["Item"] = df["Item"].astype(str).str.strip()
     df["Size"] = df["Size"].astype(str).str.strip().replace("nan", "")
     df["Supplier"] = df["Supplier"].astype(str).str.strip()
-    df["Label"] = df.astype(str).agg(", ".join, axis=1)
+    df["Label"] = df.apply(
+         lambda row: f"{row['Item']}, {row['Size']}, ${row['Price']:.2f}, {row['Supplier']}", 
+    axis=1
+    )
     return df.sort_values("Item")
 
 df = load_data()
